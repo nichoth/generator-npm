@@ -1,5 +1,5 @@
 {
-  "name": "<%= appName %>",
+  "name": "<%= appNameSlug %>",
   "version": "0.0.0",
   "description": "<%= description %>",
   "main": "<%= mainFile %>",
@@ -12,8 +12,10 @@
     "demo": "browserify example/example.js > example/bundle.js && html-inline example/index.html | curl -sT- https://htmlb.in | pbcopy && echo \"Don't forget to paste the demo URL into the readme.\""
   },
   "author": "Nick Thomas <nichoth@gmail.com>",
+  "repository": "https://github.com/nichoth/<%+ appNameSlug %>",
   "license": "ISC",
+  "peerDependencies": {
+  },
   "devDependencies": {
-    "ecstatic": "^0.7.1",
   }
 }
