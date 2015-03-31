@@ -1,6 +1,14 @@
 # npm Module Template #
 
+## Install ##
+
 ```bash
-$ npm install -g generator-npm
+$ git clone https://github.com/nichoth/generator-npm.git
+$ cd generator-npm && npm link
+```
+
+## Run ##
+
+```bash
 $ cd my-project && yo npm
 ```
