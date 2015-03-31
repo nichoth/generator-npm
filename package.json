@@ -1,0 +1,34 @@
+{
+  "name": "generator-npm",
+  "version": "0.0.0",
+  "description": "Yeoman generator",
+  "license": "MIT",
+  "main": "app/index.js",
+  "repository": "nichoth/generator-npm",
+  "author": {
+    "name": "",
+    "email": "",
+    "url": "https://github.com/nichoth"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "files": [
+    "app"
+  ],
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "dependencies": {
+    "chalk": "^1.0.0",
+    "slug": "^0.8.0",
+    "yeoman-generator": "^0.18.9",
+    "yosay": "^1.0.2"
+  },
+  "devDependencies": {
+    "mocha": "*"
+  }
+}

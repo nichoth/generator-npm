@@ -1,0 +1,97 @@
+'use strict';
+var yeoman = require('yeoman-generator');
+var chalk = require('chalk');
+var yosay = require('yosay');
+var slug = require('slug');
+
+module.exports = yeoman.generators.Base.extend({
+  initializing: function () {
+    this.pkg = require('../package.json');
+  },
+
+  prompting: function () {
+    var done = this.async();
+
+    // Have Yeoman greet the user.
+    // this.log(yosay(
+    //   'Welcome to the stellar ' + chalk.red('npm') + ' generator!'
+    // ));
+
+    var prompts = [{
+      type: 'input',
+      name: 'appName',
+      message: 'Project name: ',
+      default: this.appname
+    },
+    {
+      type: 'input',
+      name: 'description',
+      message: 'Project description: '
+    },
+    { type: 'input',
+      name: 'mainFile',
+      message: 'Main file: ',
+      default: 'index.js'
+    }];
+
+    this.prompt(prompts, function (props) {
+      this.appName = props.appName;
+      this.description = props.description;
+      this.mainFile = props.mainFile;
+      this.appNameSlug = slug(props.appName);
+      done();
+    }.bind(this));
+  },
+
+  writing: {
+    app: function () {
+      this.fs.copyTpl(
+        this.templatePath('_package.json'),
+        this.destinationPath('package.json'),
+        this
+      );
+      this.fs.copyTpl(
+        this.templatePath('example/_index.html'),
+        this.destinationPath('example/index.html'),
+        this
+      );
+      this.fs.copyTpl(
+        this.templatePath('example/_example.js'),
+        this.destinationPath('example/_example.js'),
+        this
+      );
+      this.fs.copyTpl(
+        this.templatePath('_readme.md'),
+        this.destinationPath('readme.md'),
+        this
+      );
+      this.fs.copyTpl(
+        this.templatePath('_server.js'),
+        this.destinationPath('server.js'),
+        this
+      );
+      this.fs.copyTpl(
+        this.templatePath('_index.js'),
+        this.destinationPath(this.mainFile),
+        this
+      );
+    },
+
+    projectfiles: function () {
+      this.fs.copy(
+        this.templatePath('editorconfig'),
+        this.destinationPath('.editorconfig')
+      );
+      this.fs.copy(
+        this.templatePath('jshintrc'),
+        this.destinationPath('.jshintrc')
+      );
+    }
+  },
+
+  // install: function () {
+  //   this.installDependencies({
+  //     skipInstall: this.options['skip-install']
+  //   });
+  // }
+});
