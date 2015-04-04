@@ -57,7 +57,7 @@ module.exports = yeoman.generators.Base.extend({
       );
       this.fs.copyTpl(
         this.templatePath('example/_example.js'),
-        this.destinationPath('example/_example.js'),
+        this.destinationPath('example/example.js'),
         this
       );
       this.fs.copyTpl(
