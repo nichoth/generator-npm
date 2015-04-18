@@ -13,9 +13,9 @@ module.exports = yeoman.generators.Base.extend({
     var done = this.async();
 
     // Have Yeoman greet the user.
-    // this.log(yosay(
-    //   'Welcome to the stellar ' + chalk.red('npm') + ' generator!'
-    // ));
+    this.log(yosay(
+      'Welcome to the stellar ' + chalk.red('npm') + ' generator!'
+    ));
 
     var prompts = [{
       type: 'input',
@@ -32,6 +32,16 @@ module.exports = yeoman.generators.Base.extend({
       name: 'mainFile',
       message: 'Main file: ',
       default: 'index.js'
+    },
+    {
+      type: 'checkbox',
+      name: 'devServer',
+      message: 'Dev Server?',
+      choices: [{
+        name: 'ecstatic',
+        value: 'includeEcstatic',
+        checked: false
+      }]
     }];
 
     this.prompt(prompts, function (props) {
@@ -39,6 +49,7 @@ module.exports = yeoman.generators.Base.extend({
       this.description = props.description;
       this.mainFile = props.mainFile;
       this.appNameSlug = slug(props.appName);
+      this.includeEcstatic = props.devServer.indexOf('includeEcstatic') !== -1;
       done();
     }.bind(this));
   },
@@ -89,7 +100,8 @@ module.exports = yeoman.generators.Base.extend({
     // this.installDependencies({
     //   skipInstall: this.options['skip-install']
     // });
-
-    this.npmInstall(['ecstatic'], {saveDev: true});
+    if (this.includeEcstatic) {
+      this.npmInstall(['ecstatic'], {saveDev: true});
+    }
   }
 });
