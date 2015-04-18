@@ -7,9 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "browserify -d example/example.js > example/bundle.js",
     "watch": "watchify example/example.js -o example/bundle.js -dv",
+    <% if (includeServer) { %>
     "server": "node server.js",
-    "dev": "npm run watch & npm run server",
-    "demo": "browserify example/example.js > example/bundle.js && html-inline example/index.html | curl -sT- https://htmlb.in | pbcopy && echo \"Don't forget to paste the demo URL into the readme.\""
+    "dev": "npm run watch & npm run server",<% } %>"demo": "browserify example/example.js > example/bundle.js && html-inline example/index.html | curl -sT- https://htmlb.in | pbcopy && echo \"Don't forget to paste the demo URL into the readme.\""
   },
   "author": "Nick Thomas <nichoth@gmail.com>",
   "repository": {
