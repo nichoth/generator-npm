@@ -42,12 +42,6 @@ module.exports = yeoman.generators.Base.extend({
         value: 'includeEcstatic',
         checked: false
       }]
-    },
-    {
-      type: 'confirm',
-      name: 'tape',
-      message: 'Include tape?',
-      default: false
     }];
 
     this.prompt(prompts, function (props) {
@@ -57,7 +51,6 @@ module.exports = yeoman.generators.Base.extend({
       this.appNameSlug = slug(props.appName);
       this.includeEcstatic = props.devServer.indexOf('includeEcstatic') !== -1;
       this.includeServer = this.includeEcstatic;
-      this.includeTape = props.tape;
       done();
     }.bind(this));
   },
@@ -110,9 +103,6 @@ module.exports = yeoman.generators.Base.extend({
     // });
     if (this.includeEcstatic) {
       this.npmInstall(['ecstatic'], {saveDev: true});
-    }
-    if (this.includeTape) {
-      this.npmInstall(['tape'], {saveDev: true});
     }
   }
 });
