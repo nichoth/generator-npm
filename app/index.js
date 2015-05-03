@@ -77,11 +77,13 @@ module.exports = yeoman.generators.Base.extend({
         this.destinationPath('readme.md'),
         this
       );
-      this.fs.copyTpl(
-        this.templatePath('_server.js'),
-        this.destinationPath('server.js'),
-        this
-      );
+      if (this.includeServer) {
+        this.fs.copyTpl(
+          this.templatePath('_server.js'),
+          this.destinationPath('server.js'),
+          this
+        );
+      }
       this.fs.copyTpl(
         this.templatePath('_index.js'),
         this.destinationPath(this.mainFile),
