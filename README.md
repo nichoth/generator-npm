@@ -1,4 +1,6 @@
-# npm Module Template #
+# npm Module Generator #
+
+Generator for consumable npm modules.
 
 ## Install ##
 
