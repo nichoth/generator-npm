@@ -24,6 +24,7 @@
   ],
   "dependencies": {
     "chalk": "^1.0.0",
+    "latest-version": "^1.0.0",
     "npmconf": "^2.1.2",
     "slug": "^0.8.0",
     "yeoman-generator": "^0.18.9",
