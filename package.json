@@ -23,6 +23,7 @@
     "npm"
   ],
   "dependencies": {
+    "async": "^1.0.0",
     "chalk": "^1.0.0",
     "latest-version": "^1.0.0",
     "npmconf": "^2.1.2",

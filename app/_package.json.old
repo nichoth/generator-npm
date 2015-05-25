@@ -1,0 +1,30 @@
+{
+  "name": "<%= appNameSlug %>",
+  "version": "0.0.0",
+  "description": "<%= description %>",
+  "main": "<%= mainFile %>",
+  "browserify": {
+    "transform": [<% for(tr in transforms) { %><%= transforms[tr] %>, <%}%>]
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify -d example/example.js > example/bundle.js",
+    "watch": "watchify example/example.js -o example/bundle.js -dv",
+    <% if (includeServer) { %>
+    "server": "node server.js",
+    "dev": "npm run watch & npm run server",<% } %>"demo": "browserify example/example.js > example/bundle.js && html-inline example/index.html | curl -sT- https://htmlb.in"
+  },
+  "author": "Nick Thomas <nichoth@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nichoth/<%= appNameSlug %>.git"
+  },
+  "license": "ISC",
+  "peerDependencies": {
+  },
+  "devDependencies": {
+    <% for (k in Object.keys(devDeps) ) { %>
+      "<%= k %>": "^<%= devDeps[k] %>",
+    <% } %>
+  }
+}

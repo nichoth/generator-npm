@@ -1,10 +1,12 @@
 'use strict';
 var yeoman = require('yeoman-generator');
-var chalk = require('chalk');
-var yosay = require('yosay');
+// var chalk = require('chalk');
+// var yosay = require('yosay');
 var slug = require('slug');
-var npmconf = require('npmconf');
+// var npmconf = require('npmconf');
 var latest = require('latest-version');
+var async = require('async');
+var fs = require('fs');
 
 module.exports = yeoman.generators.Base.extend({
   initializing: function () {
@@ -12,8 +14,8 @@ module.exports = yeoman.generators.Base.extend({
   },
 
   prompting: function () {
-    var self = this;
     var done = this.async();
+    var self = this;
 
     // Have Yeoman greet the user.
 //    this.log(yosay(
@@ -68,7 +70,8 @@ module.exports = yeoman.generators.Base.extend({
       this.description = props.description;
       this.mainFile = props.mainFile;
       this.appNameSlug = slug(props.appName);
-      this.devDeps = props.devDeps.concat(props.devServer);
+      this.devDeps = ['parallelshell'];
+      this.devDeps.concat( props.devDeps.concat(props.devServer) );
       this.includeServer = props.devServer.length > 0;
       this.installDeps = props.installDeps;
       this.transforms = [];
@@ -76,7 +79,19 @@ module.exports = yeoman.generators.Base.extend({
         this.devDeps.push('reactify');
         this.transforms.push('reactify');
       }
-      done();
+      this.depVersions = {};
+      async.map(this.devDeps, transform, function(err, result) {
+        self.depVersions = result;
+        done();
+      });
+
+      function transform(item, cb) {
+        latest(item, function(err, version) {
+          var obj = {};
+          obj[item] = version;
+          cb(err, obj);
+        });
+      }
     }.bind(this));
 
     // npmconf.load({}, function(err, conf) {
@@ -90,11 +105,27 @@ module.exports = yeoman.generators.Base.extend({
 
   writing: {
     app: function () {
-      this.fs.copyTpl(
-        this.templatePath('_package.json'),
+
+      // easier without template
+      var pkg = require('./templates/_package.json');
+      pkg.name = this.appNameSlug;
+      pkg.description = this.description;
+      pkg.main = this.mainFile;
+      pkg.browserify.transform = this.transforms;
+      if (this.includeServer) {
+        pkg.scripts.server = 'node server.js';
+      }
+      fs.writeFile(
         this.destinationPath('package.json'),
-        this
+        JSON.stringify(pkg, null, 2),
+        console.log
       );
+
+      // this.fs.copyTpl(
+      //   this.templatePath('_package.json'),
+      //   this.destinationPath('package.json'),
+      //   this
+      // );
       this.fs.copyTpl(
         this.templatePath('example/_index.html'),
         this.destinationPath('example/index.html'),
@@ -135,6 +166,9 @@ module.exports = yeoman.generators.Base.extend({
   install: function () {
     if (this.installDeps) {
       this.npmInstall(this.devDeps, {saveDev: true});
+    }
+    else {
+
     }
   }
 });
