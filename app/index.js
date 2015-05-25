@@ -70,8 +70,7 @@ module.exports = yeoman.generators.Base.extend({
       this.description = props.description;
       this.mainFile = props.mainFile;
       this.appNameSlug = slug(props.appName);
-      this.devDeps = ['parallelshell'];
-      this.devDeps.concat( props.devDeps.concat(props.devServer) );
+      this.devDeps = props.devDeps.concat(props.devServer, 'parallelshell');
       this.includeServer = props.devServer.length > 0;
       this.installDeps = props.installDeps;
       this.transforms = [];
@@ -80,16 +79,14 @@ module.exports = yeoman.generators.Base.extend({
         this.transforms.push('reactify');
       }
       this.depVersions = {};
-      async.map(this.devDeps, transform, function(err, result) {
-        self.depVersions = result;
+      async.each(this.devDeps, transform, function() {
         done();
       });
 
       function transform(item, cb) {
         latest(item, function(err, version) {
-          var obj = {};
-          obj[item] = version;
-          cb(err, obj);
+          self.depVersions[item] = '^'+version;
+          cb(err);
         });
       }
     }.bind(this));
@@ -112,20 +109,18 @@ module.exports = yeoman.generators.Base.extend({
       pkg.description = this.description;
       pkg.main = this.mainFile;
       pkg.browserify.transform = this.transforms;
+      pkg.repository.url = pkg.repository.url + this.appNameSlug+'.git';
       if (this.includeServer) {
         pkg.scripts.server = 'node server.js';
       }
+      if (!this.installDeps) {
+        pkg.devDependencies = this.depVersions;
+      }
       fs.writeFile(
         this.destinationPath('package.json'),
-        JSON.stringify(pkg, null, 2),
-        console.log
+        JSON.stringify(pkg, null, 2)
       );
 
-      // this.fs.copyTpl(
-      //   this.templatePath('_package.json'),
-      //   this.destinationPath('package.json'),
-      //   this
-      // );
       this.fs.copyTpl(
         this.templatePath('example/_index.html'),
         this.destinationPath('example/index.html'),
@@ -166,9 +161,6 @@ module.exports = yeoman.generators.Base.extend({
   install: function () {
     if (this.installDeps) {
       this.npmInstall(this.devDeps, {saveDev: true});
-    }
-    else {
-
     }
   }
 });

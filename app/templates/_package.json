@@ -1,4 +1,7 @@
 {
+  "name": "",
+  "description": "",
+  "main": "",
   "version": "0.0.0",
   "browserify": {
   },
@@ -6,13 +9,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "browserify -d example/example.js > example/bundle.js",
     "watch": "watchify example/example.js -o example/bundle.js -dv",
-    "dev": "npm run watch & npm run server",
+    "dev": "parallelshell \"npm run watch\" parallelshell \"npm run server\"",
+    "server": "",
     "demo": "browserify example/example.js > example/bundle.js && html-inline example/index.html | curl -sT- https://htmlb.in"
   },
   "author": "Nick Thomas <nichoth@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nichoth/<%= appNameSlug %>.git"
+    "url": "https://github.com/nichoth/"
   },
   "license": "ISC",
   "peerDependencies": {
