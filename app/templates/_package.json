@@ -13,10 +13,10 @@
     "server": "",
     "demo": "browserify example/example.js > example/bundle.js && html-inline example/index.html | curl -sT- https://htmlb.in"
   },
-  "author": "Nick Thomas <nichoth@gmail.com>",
+  "author": "",
   "repository": {
     "type": "git",
-    "url": "https://github.com/nichoth/"
+    "url": "https://github.com/"
   },
   "license": "ISC",
   "peerDependencies": {

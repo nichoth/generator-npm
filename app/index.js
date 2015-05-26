@@ -1,9 +1,9 @@
 'use strict';
 var yeoman = require('yeoman-generator');
-// var chalk = require('chalk');
+var chalk = require('chalk');
 // var yosay = require('yosay');
 var slug = require('slug');
-// var npmconf = require('npmconf');
+var npmconf = require('npmconf');
 var latest = require('latest-version');
 var async = require('async');
 var fs = require('fs');
@@ -79,24 +79,42 @@ module.exports = yeoman.generators.Base.extend({
         this.transforms.push('reactify');
       }
       this.depVersions = {};
-      async.each(this.devDeps, transform, function() {
+
+      function devDeps(cb) {
+        async.each(self.devDeps, getVersion, function(err) {
+          if (err) {
+            self.skipVersions = true;
+            console.log(chalk.red('Fetching dependency versions failed.'));
+          }
+          cb();
+        });
+      }
+
+      function conf(cb) {
+        npmconf.load({}, function(err, conf) {
+          self.authorName = conf.get('init.author.name');
+          self.website = conf.get('init.author.url');
+          self.authorEmail = conf.get('init.author.email');
+          self.github = conf.get('init.author.github');
+          cb();
+        });
+      }
+
+      function getVersion(item, callback) {
+        latest(item, function(err, version) {
+          self.depVersions[item] = '^'+version;
+          callback(err);
+        });
+      }
+
+      var asyncTasks = [conf];
+      if (!this.installDeps) asyncTasks.push(devDeps);
+
+      async.parallel(asyncTasks, function() {
         done();
       });
 
-      function transform(item, cb) {
-        latest(item, function(err, version) {
-          self.depVersions[item] = '^'+version;
-          cb(err);
-        });
-      }
     }.bind(this));
-
-    // npmconf.load({}, function(err, conf) {
-    //   self.authorName = conf.get('init.author.name');
-    //   self.website = conf.get('init.author.url');
-    //   self.authorEmail = conf.get('init.author.email');
-    //   self.github = conf.get('init.author.github');
-    // });
   },
 
 
@@ -109,11 +127,17 @@ module.exports = yeoman.generators.Base.extend({
       pkg.description = this.description;
       pkg.main = this.mainFile;
       pkg.browserify.transform = this.transforms;
-      pkg.repository.url = pkg.repository.url + this.appNameSlug+'.git';
+      pkg.author = this.authorName + ' <' + this.authorEmail+'>';
+      pkg.repository.url = pkg.repository.url+
+        this.github+
+        '/'+this.appNameSlug+'.git'
+      ;
       if (this.includeServer) {
         pkg.scripts.server = 'node server.js';
+      } else {
+        delete pkg.scripts.server;
       }
-      if (!this.installDeps) {
+      if (!this.installDeps && !this.skipVersions) {
         pkg.devDependencies = this.depVersions;
       }
       fs.writeFile(
