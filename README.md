@@ -6,13 +6,22 @@ Generator for consumable npm modules, using browserify and `npm run` scripts as 
 
 ```bash
 $ git clone https://github.com/nichoth/generator-npm.git
-$ cd generator-npm && npm link
+$ cd generator-npm
+$ npm link
 ```
 
-## Run ##
+## Use ##
 
 ```bash
 $ cd my-project && yo npm
+```
+
+Depends on npm init settings for author name, email, and github. Set them like this if they are not already:
+
+```
+$ npm config set init.author.name your name
+$ npm config set init.author.email your email
+$ npm config set init.author.github github handle
 ```
 
 ## Example Output

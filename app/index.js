@@ -93,7 +93,6 @@ module.exports = yeoman.generators.Base.extend({
       function conf(cb) {
         npmconf.load({}, function(err, conf) {
           self.authorName = conf.get('init.author.name');
-          self.website = conf.get('init.author.url');
           self.authorEmail = conf.get('init.author.email');
           self.github = conf.get('init.author.github');
           cb();
