@@ -70,8 +70,10 @@ module.exports = yeoman.generators.Base.extend({
       this.description = props.description;
       this.mainFile = props.mainFile;
       this.appNameSlug = slug(props.appName);
+      this.devDeps = [];
+      this.devDeps.concat(props.devServer);
       // this.devDeps = props.devDeps.concat(props.devServer, 'parallelshell');
-      this.includeServer = props.devServer.length > 0;
+      this.includeServer = props.devServer && props.devServer.length > 0;
       this.installDeps = props.installDeps;
       this.transforms = [];
       if (props.devDeps.indexOf('react') > -1) {
